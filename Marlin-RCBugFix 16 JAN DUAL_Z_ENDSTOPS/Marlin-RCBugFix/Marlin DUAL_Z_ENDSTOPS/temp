@@ -1,0 +1,42 @@
+  #if ENABLED(BLTOUCH)
+  void give_bltouch_a_command( int angle ) {
+    int i;
+    servo[Z_ENDSTOP_SERVO_NR].move(angle);  // we give the BL-Touch the command and then
+    for( i=0; i<15; i++) {                  // wait a short time.
+      idle();
+      delay(25);
+    }
+  }
+  #endif
+
+  // returns false for ok and true for failure
+  static bool set_probe_deployed(bool deploy) {
+
+    #if ENABLED(DEBUG_LEVELING_FEATURE)
+      if (DEBUGGING(LEVELING)) {
+        DEBUG_POS("set_probe_deployed", current_position);
+        SERIAL_ECHOLNPAIR("deploy: ", deploy);
+      }
+    #endif
+
+    if (endstops.z_probe_enabled == deploy) return false;
+
+    // Make room for probe
+    do_probe_raise(_Z_CLEARANCE_DEPLOY_PROBE);
+
+    // When deploying make sure BLTOUCH is not already triggered
+    #if ENABLED(BLTOUCH)
+      if (deploy && TEST_BLTOUCH()) {                   // if BL-Touch is saying it is triggered
+        give_bltouch_a_command( BLTOUCH_RESET );        // we try to reset it.  We also need to
+        give_bltouch_a_command( BLTOUCH_DEPLOY );       // deploy and stow to clear the Triggered
+        give_bltouch_a_command( BLTOUCH_STOW );         // condition.
+      }
+      if (deploy && TEST_BLTOUCH()) {                   // if it still claims it is triggered
+	stop();                                         // we punt! 
+	return true; 
+      }
+    #elif ENABLED(Z_PROBE_SLED)
+      if (axis_unhomed_error(true, false, false)) { stop(); return true; }
+    #elif ENABLED(Z_PROBE_ALLEN_KEY)
+      if (axis_unhomed_error(true, true,  true )) { stop(); return true; }
+    #endif
