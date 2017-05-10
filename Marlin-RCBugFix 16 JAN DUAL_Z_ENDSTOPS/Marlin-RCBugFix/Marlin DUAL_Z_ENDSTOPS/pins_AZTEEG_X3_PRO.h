@@ -29,7 +29,7 @@
 #include "pins_RAMPS.h"
 
 #define SPINDLE_ENABLE_PIN     45  // Hopefully use this in M3/4/5 commands
-#define SPINDLE_SPEED_PIN  44 
+#define SPINDLE_SPEED_PIN  44
 #define SPINDLE_DIR_PIN       21
 
 //
@@ -38,8 +38,9 @@
 //
 #undef SERVO0_PIN
 #undef SERVO1_PIN
-#undef SERVO2_PIN 
+#undef SERVO2_PIN
 #define SERVO0_PIN         57
+#define SERVO1_PIN  64
 
   #undef X_MIN_PIN
   #undef X_MAX_PIN
@@ -57,8 +58,8 @@
 #if ENABLED(DELTA)
   #define X_MIN_PIN         2
   #define X_MAX_PIN         3
-  #define Y_MIN_PIN        15  
-  #define Y_MAX_PIN        14   
+  #define Y_MIN_PIN        15
+  #define Y_MAX_PIN        14
   #define Z_MIN_PIN        19
   #define Z_MAX_PIN        18
 #else
@@ -68,7 +69,7 @@
   #define Y_MIN_PIN        15  // 14 reversed from normal order because of cable length
   #define Y_MAX_PIN        14  // 15 reversed from normal order because of cable length
   #define Z_MIN_PIN        19  // 18  reversed to get DUAL_Z_ENDSTOPS to work
-  #define Z_MAX_PIN        18  // 19 
+  #define Z_MAX_PIN        18  // 19
 
 #endif
 
@@ -76,31 +77,38 @@
 // Z Probe (when not Z_MIN_PIN)
 //
 #undef Z_MIN_PROBE_PIN
-#define Z_MIN_PROBE_PIN  64  // use T3 connector for BLTouch
+#define Z_MIN_PROBE_PIN  64    
 
+/* use T4 (on silkscreen) connector for BLTouch */
 
 //
 // Steppers
 //
-#define E2_STEP_PIN        23
-#define E2_DIR_PIN         25
-#define E2_ENABLE_PIN      40
+//#define E2_STEP_PIN        23  // E2 socket is bad
+//#define E2_DIR_PIN         25
+//#define E2_ENABLE_PIN      40
 
-#define E3_STEP_PIN        27
-#define E3_DIR_PIN         29
-#define E3_ENABLE_PIN      41
+#define E2_STEP_PIN        27  // shift Z2 stepper to E3 socket
+#define E2_DIR_PIN         29  // but must tell Marlin it's E2
+#define E2_ENABLE_PIN      41
 
 #define E4_STEP_PIN        43
 #define E4_DIR_PIN         37
-#define E4_ENABLE_PIN      42
+//#define E4_ENABLE_PIN      42
 
 //
 // Temperature Sensors
 //
 
+// T0 (on silkscreen)  67 / A13 - unuseable for anything
+// T1 (on silkscreen)  69 / A15 - OK
+// T2 (on silkscreen)  66 / A12 - input only
+// T3 (on silkscreen)  65 / A11 - unuseable for anything
+// T4 (on silkscreen)  64 / A10 - OK
+
 #undef TEMP_0_PIN          // 13  T0 is damaged & can't be used as an analog input
 #define TEMP_0_PIN         9   // the PT100 amplifier can't drive the 4.7K pullups on the standard termistor inputs
-////#define TEMP_0_PIN         15   // highjack temp 1 pin while trying the "147 : Pt100 with 4k7 pullup" setting - didn't work
+//#define TEMP_0_PIN         15   // highjack temp 1 pin while trying the "147 : Pt100 with 4k7 pullup" setting - didn't work
 //#undef TEMP_1_PIN
 //#define TEMP_1_PIN          15   // T1 is OK (defined in RAMPS)
 //#define TEMP_2_PIN         12   // ANALOG NUMBERING   // T2 is damaged & can't be used as an analog input
@@ -114,13 +122,13 @@
 //
 // Heaters / Fans
 //
-#define HEATER_1_PIN      11
-#define HEATER_2_PIN      9
-#define HEATER_3_PIN      17
+#define HEATER_1_PIN       11
+#define HEATER_2_PIN       16
+#define HEATER_3_PIN       17
 //#define HEATER_4_PIN        4
-//#define HEATER_5_PIN        5  
-//#define HEATER_6_PIN        6  
-//#define HEATER_7_PIN       11  
+//#define HEATER_5_PIN        5
+//#define HEATER_6_PIN        6
+//#define HEATER_7_PIN       11
 
 #undef FAN_PIN
 #define FAN_PIN             6 //Part Cooling System
@@ -129,10 +137,10 @@
 
 // Fans/Water Pump to cool the hotend cool side.
 #undef RAMPS_D9_PIN
-#define E0_AUTO_FAN_PIN   16             // so don't get confused by the debug pins report
-#define E1_AUTO_FAN_PIN   16
-#define E2_AUTO_FAN_PIN   16
-#define E3_AUTO_FAN_PIN   16
+#define E0_AUTO_FAN_PIN   9             // so don't get confused by the debug pins report
+#define E1_AUTO_FAN_PIN   9
+#define E2_AUTO_FAN_PIN   9
+#define E3_AUTO_FAN_PIN   9
 
 //
 // LCD / Controller
@@ -142,7 +150,7 @@
 
 #if ENABLED(VIKI2)      // some pins are different than standard
   #undef  BEEPER_PIN
-  #undef  BTN_EN1	
+  #undef  BTN_EN1
   #undef  BTN_EN2
   #undef  BTN_ENC
   #undef  DOGLCD_A0
@@ -150,26 +158,26 @@
   #undef  KILL_PIN
   #undef  SDSS
   #undef  SD_DETECT_PIN
-  #undef  STAT_LED_BLUE_PIN	
+  #undef  STAT_LED_BLUE_PIN
   #undef  STAT_LED_RED_PIN
-  
-  #define  BEEPER_PIN	 12	
-  #define  BTN_EN1	 22	
-  #define  BTN_EN2  7	
-  #define  BTN_ENC	 39	
-  #define  DOGLCD_A0	 63
-  #define  DOGLCD_CS	47
-  #define  KILL_PIN	 31	
-  #define  SDSS	53	
-  #define  SD_DETECT_PIN	 49
-  #define  STAT_LED_BLUE_PIN	  35	
-  #define  STAT_LED_RED_PIN	32	
+
+  #define  BEEPER_PIN  12
+  #define  BTN_EN1   22
+  #define  BTN_EN2  7
+  #define  BTN_ENC   39
+  #define  DOGLCD_A0   42
+  #define  DOGLCD_CS  47
+  #define  KILL_PIN  31
+  #define  SDSS 53
+  #define  SD_DETECT_PIN   49
+  #define  STAT_LED_BLUE_PIN    35
+  #define  STAT_LED_RED_PIN 32
 #endif
 
 
 
 
 
-  
+
 
 

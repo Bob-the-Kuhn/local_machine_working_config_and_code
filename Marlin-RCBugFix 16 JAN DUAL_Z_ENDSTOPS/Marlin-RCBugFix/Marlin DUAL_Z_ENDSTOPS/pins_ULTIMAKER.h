@@ -53,7 +53,7 @@
 // Z Probe (when not Z_MIN_PIN)
 //
 #ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN  32
+  #define Z_MIN_PROBE_PIN  34
 #endif
 
 //
@@ -110,12 +110,12 @@
 
   #define BEEPER_PIN 18
 
-  #if ENABLED(NEWPANEL)
+  #if ENABLED(NEWPANEL)   //ulimaker shield 5 MAY 2017
 
     #define LCD_PINS_RS 20
     #define LCD_PINS_ENABLE 17
-    #define LCD_PINS_D4 16
-    #define LCD_PINS_D5 21
+    #define LCD_PINS_D4 21
+    #define LCD_PINS_D5 16
     #define LCD_PINS_D6 5
     #define LCD_PINS_D7 6
 
