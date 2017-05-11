@@ -39,12 +39,12 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#define STRING_CONFIG_H_AUTHOR "UBL 8 MAY 1" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "UBL 10 MAY 1" // Who made the changes.
 
 #ifndef MOTHERBOARD
 //  #define MOTHERBOARD BOARD_RAMPS_14_EFB
-  #define MOTHERBOARD  BOARD_ULTIMAKER
-//  #define MOTHERBOARD BOARD_AZTEEG_X3_PRO
+//  #define MOTHERBOARD  BOARD_ULTIMAKER
+  #define MOTHERBOARD BOARD_AZTEEG_X3_PRO
 //  #define MOTHERBOARD BOARD_PRINTRBOARD_REVF
 //  #define MOTHERBOARD BOARD_SANGUINOLOLU_11
 //  #define MOTHERBOARD BOARD_SANGUINOLOLU_12
@@ -634,7 +634,7 @@
  *   A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
-#define FIX_MOUNTED_PROBE
+//#define FIX_MOUNTED_PROBE
 
 /**
  *   Z Servo Probe, such as an endstop switch on a rotating arm.
