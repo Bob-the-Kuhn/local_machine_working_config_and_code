@@ -1,23 +1,40 @@
+/**
+ * Marlin 3D Printer Firmware
+ * Copyright (C) 2017 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ *
+ * Based on Sprinter and grbl.
+ * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 //
 //  some of the pin mapping functions of the Teensduino extension to the Arduino IDE
 //  do not function the same as the other Arduino extensions
 //
 
+#ifndef __PINSDEBUG_TEENSYDUINO_H__
+#define __PINSDEBUG_TEENSYDUINO_H__
 
-#define TEENSYDUINO_IDE
+#undef NUM_DIGITAL_PINS
+#define NUM_DIGITAL_PINS 48  // Teensy says 46 but FASTIO is 48
 
-//digitalPinToTimer(pin) function works like Arduino but Timers are not defined
-#define TIMER0B 1
-#define TIMER1A 7
-#define TIMER1B 8
-#define TIMER1C 9
-#define TIMER2A 6
-#define TIMER2B 2
-#define TIMER3A 5
-#define TIMER3B 4
-#define TIMER3C 3
+// "digitalPinToPort" function just returns the pin number so need to create our own.
+// Can't use the name "digitalPinToPort" for our own because it interferes with the
+// FAST_PWM_FAN function if we do
 
-// digitalPinToPort function just returns the pin number so need to create our own
 #define PA 1
 #define PB 2
 #define PC 3
@@ -25,9 +42,8 @@
 #define PE 5
 #define PF 6
 
-#undef digitalPinToPort
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+const uint8_t PROGMEM digital_pin_to_port_PGM_Teensy[] = {
   PD, // 0  - PD0 - INT0 - PWM
   PD, // 1  - PD1 - INT1 - PWM
   PD, // 2  - PD2 - INT2 - RX
@@ -78,10 +94,13 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PE, // 47 - PE3 (not defined in teensyduino)
 };
 
-#define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
+#define digitalPinToPort_Teensy(P) ( pgm_read_byte( digital_pin_to_port_PGM_Teensy + (P) ) )
 
 // digitalPinToBitMask(pin) is OK
 
-#define digitalRead_mod(p)  digitalRead(p)   //Teensyduino's version of digitalRead doesn't disable the PWMs so we can use it as is
+#define digitalRead_mod(p)  digitalRead(p)   // Teensyduino's version of digitalRead doesn't
+                                             // disable the PWMs so we can use it as is
 
 // portModeRegister(pin) is OK
+
+#endif // __PINSDEBUG_TEENSYDUINO_H__

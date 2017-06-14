@@ -63,10 +63,6 @@
   #define Z_MIN_PROBE_PIN  30
 #endif
 
-#if ENABLED(Z_PROBE_SLED)
-  #define SLED_PIN         -1
-#endif
-
 //
 // Limit Switches
 //
@@ -139,8 +135,12 @@
 //
 #define SDSS               53
 #define LED_PIN            13
-#define FILWIDTH_PIN        3   // Analog Input
 #define PS_ON_PIN           4
+#define CASE_LIGHT_PIN     46
+
+#ifndef FILWIDTH_PIN
+  #define FILWIDTH_PIN      3   // Analog Input
+#endif
 
 //
 // LCD / Controller
@@ -151,12 +151,12 @@
 
   #if ENABLED(NEWPANEL)
 
-    #define LCD_PINS_RS 70
+    #define LCD_PINS_RS     70
     #define LCD_PINS_ENABLE 71
-    #define LCD_PINS_D4 72
-    #define LCD_PINS_D5 73
-    #define LCD_PINS_D6 74
-    #define LCD_PINS_D7 75
+    #define LCD_PINS_D4     72
+    #define LCD_PINS_D5     73
+    #define LCD_PINS_D6     74
+    #define LCD_PINS_D7     75
 
     #if ENABLED(VIKI2) || ENABLED(miniVIKI)
       #define BEEPER_PIN 44
@@ -202,13 +202,20 @@
     //#define SHIFT_OUT 40
     //#define SHIFT_EN 17
 
-    #define LCD_PINS_RS 75
+    #define LCD_PINS_RS     75
     #define LCD_PINS_ENABLE 17
-    #define LCD_PINS_D4 23
-    #define LCD_PINS_D5 25
-    #define LCD_PINS_D6 27
-    #define LCD_PINS_D7 29
+    #define LCD_PINS_D4     23
+    #define LCD_PINS_D5     25
+    #define LCD_PINS_D6     27
+    #define LCD_PINS_D7     29
 
   #endif // !NEWPANEL
 
 #endif // ULTRA_LCD
+
+//
+// M3/M4/M5 - Spindle/Laser Control
+//
+#define SPINDLE_LASER_PWM_PIN    45  // MUST BE HARDWARE PWM
+#define SPINDLE_LASER_ENABLE_PIN 31  // Pin should have a pullup!
+#define SPINDLE_DIR_PIN          32

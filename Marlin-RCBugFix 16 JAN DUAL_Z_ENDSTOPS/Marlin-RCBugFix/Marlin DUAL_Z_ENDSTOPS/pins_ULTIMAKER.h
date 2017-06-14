@@ -24,6 +24,14 @@
  * Ultimaker pin assignments
  */
 
+/**
+ * Rev B   2 JAN 2017
+ *
+ *  Added pin definitions for:
+ *    M3, M4 & M5 spindle control commands
+ *    case light
+ */
+
 #if !defined(__AVR_ATmega1280__) && !defined(__AVR_ATmega2560__)
   #error "Oops!  Make sure you have 'Arduino Mega' selected from the 'Tools -> Boards' menu."
 #endif
@@ -53,7 +61,7 @@
 // Z Probe (when not Z_MIN_PIN)
 //
 #ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN  34
+  #define Z_MIN_PROBE_PIN  32
 #endif
 
 //
@@ -101,7 +109,8 @@
 #define SDSS               53
 #define LED_PIN            13
 #define PS_ON_PIN          12
-#define SUICIDE_PIN        54  // PIN that has to be turned on right after start, to keep power flowing.
+#define SUICIDE_PIN        54   // PIN that has to be turned on right after start, to keep power flowing.
+#define CASE_LIGHT_PIN      8
 
 //
 // LCD / Controller
@@ -110,14 +119,14 @@
 
   #define BEEPER_PIN 18
 
-  #if ENABLED(NEWPANEL)   //ulimaker shield 5 MAY 2017
+  #if ENABLED(NEWPANEL)
 
-    #define LCD_PINS_RS 20
+    #define LCD_PINS_RS    20
     #define LCD_PINS_ENABLE 17
-    #define LCD_PINS_D4 21
-    #define LCD_PINS_D5 16
-    #define LCD_PINS_D6 5
-    #define LCD_PINS_D7 6
+    #define LCD_PINS_D4    16
+    #define LCD_PINS_D5    21
+    #define LCD_PINS_D6     5
+    #define LCD_PINS_D7     6
 
     // buttons are directly attached
     #define BTN_EN1 40
@@ -146,3 +155,10 @@
   #endif // !NEWPANEL
 
 #endif // ULTRA_LCD
+
+//
+// M3/M4/M5 - Spindle/Laser Control
+//
+#define SPINDLE_LASER_PWM_PIN     9  // MUST BE HARDWARE PWM
+#define SPINDLE_LASER_ENABLE_PIN 10  // Pin should have a pullup!
+#define SPINDLE_DIR_PIN          11  // use the EXP3 PWM header

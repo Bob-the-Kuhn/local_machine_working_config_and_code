@@ -236,58 +236,54 @@
 
 // If you want endstops to stay on (by default) even when not homing
 // enable this option. Override at any time with M120, M121.
-#define ENDSTOPS_ALWAYS_ON_DEFAULT
+//#define ENDSTOPS_ALWAYS_ON_DEFAULT
 
-#if (MOTHERBOARD == BOARD_AZTEEG_X3_PRO)
-  // @section extras
+// @section extras
 
-  //#define Z_LATE_ENABLE // Enable Z the last moment. Needed if your Z driver overheats.
+//#define Z_LATE_ENABLE // Enable Z the last moment. Needed if your Z driver overheats.
 
-  // Dual X Steppers
-  // Uncomment this option to drive two X axis motors.
-  // The next unused E driver will be assigned to the second X stepper.
-  //#define X_DUAL_STEPPER_DRIVERS
-  #if ENABLED(X_DUAL_STEPPER_DRIVERS)
-    // Set true if the two X motors need to rotate in opposite directions
-    #define INVERT_X2_VS_X_DIR true
-  #endif
-
-
-  // Dual Y Steppers
-  // Uncomment this option to drive two Y axis motors.
-  // The next unused E driver will be assigned to the second Y stepper.
-  #define Y_DUAL_STEPPER_DRIVERS
-  #if ENABLED(Y_DUAL_STEPPER_DRIVERS)
-    // Set true if the two Y motors need to rotate in opposite directions
-    #define INVERT_Y2_VS_Y_DIR false
-  #endif
-
-  // A single Z stepper driver is usually used to drive 2 stepper motors.
-  // Uncomment this option to use a separate stepper driver for each Z axis motor.
-  // The next unused E driver will be assigned to the second Z stepper.
-  #define Z_DUAL_STEPPER_DRIVERS
-
-  #if ENABLED(Z_DUAL_STEPPER_DRIVERS)
-
-    // Z_DUAL_ENDSTOPS is a feature to enable the use of 2 endstops for both Z steppers - Let's call them Z stepper and Z2 stepper.
-    // That way the machine is capable to align the bed during home, since both Z steppers are homed.
-    // There is also an implementation of M666 (software endstops adjustment) to this feature.
-    // After Z homing, this adjustment is applied to just one of the steppers in order to align the bed.
-    // One just need to home the Z axis and measure the distance difference between both Z axis and apply the math: Z adjust = Z - Z2.
-    // If the Z stepper axis is closer to the bed, the measure Z > Z2 (yes, it is.. think about it) and the Z adjust would be positive.
-    // Play a little bit with small adjustments (0.5mm) and check the behaviour.
-    // The M119 (endstops report) will start reporting the Z2 Endstop as well.
-
-    #define Z_DUAL_ENDSTOPS
-
-    #if ENABLED(Z_DUAL_ENDSTOPS)
-      #define Z2_USE_ENDSTOP _ZMIN_
-      #define Z_DUAL_ENDSTOPS_ADJUSTMENT -11  // use M666 command to determine/test this value
-    #endif
-
-  #endif // Z_DUAL_STEPPER_DRIVERS
-
+// Dual X Steppers
+// Uncomment this option to drive two X axis motors.
+// The next unused E driver will be assigned to the second X stepper.
+//#define X_DUAL_STEPPER_DRIVERS
+#if ENABLED(X_DUAL_STEPPER_DRIVERS)
+  // Set true if the two X motors need to rotate in opposite directions
+  #define INVERT_X2_VS_X_DIR true
 #endif
+
+// Dual Y Steppers
+// Uncomment this option to drive two Y axis motors.
+// The next unused E driver will be assigned to the second Y stepper.
+//#define Y_DUAL_STEPPER_DRIVERS
+#if ENABLED(Y_DUAL_STEPPER_DRIVERS)
+  // Set true if the two Y motors need to rotate in opposite directions
+  #define INVERT_Y2_VS_Y_DIR true
+#endif
+
+// A single Z stepper driver is usually used to drive 2 stepper motors.
+// Uncomment this option to use a separate stepper driver for each Z axis motor.
+// The next unused E driver will be assigned to the second Z stepper.
+//#define Z_DUAL_STEPPER_DRIVERS
+
+#if ENABLED(Z_DUAL_STEPPER_DRIVERS)
+
+  // Z_DUAL_ENDSTOPS is a feature to enable the use of 2 endstops for both Z steppers - Let's call them Z stepper and Z2 stepper.
+  // That way the machine is capable to align the bed during home, since both Z steppers are homed.
+  // There is also an implementation of M666 (software endstops adjustment) to this feature.
+  // After Z homing, this adjustment is applied to just one of the steppers in order to align the bed.
+  // One just need to home the Z axis and measure the distance difference between both Z axis and apply the math: Z adjust = Z - Z2.
+  // If the Z stepper axis is closer to the bed, the measure Z > Z2 (yes, it is.. think about it) and the Z adjust would be positive.
+  // Play a little bit with small adjustments (0.5mm) and check the behaviour.
+  // The M119 (endstops report) will start reporting the Z2 Endstop as well.
+
+  //#define Z_DUAL_ENDSTOPS
+
+  #if ENABLED(Z_DUAL_ENDSTOPS)
+    #define Z2_USE_ENDSTOP _XMAX_
+    #define Z_DUAL_ENDSTOPS_ADJUSTMENT  0  // use M666 command to determine/test this value
+  #endif
+
+#endif // Z_DUAL_STEPPER_DRIVERS
 
 // Enable this for dual x-carriage printers.
 // A dual x-carriage design has the advantage that the inactive extruder can be parked which
@@ -326,7 +322,7 @@
   // Default x offset in duplication mode (typically set to half print bed width)
   #define DEFAULT_DUPLICATION_X_OFFSET 100
 
-#endif //DUAL_X_CARRIAGE
+#endif // DUAL_X_CARRIAGE
 
 // Activate a solenoid on the active extruder with M380. Disable all with M381.
 // Define SOL0_PIN, SOL1_PIN, etc., for each extruder that has a solenoid.
@@ -368,6 +364,8 @@
 
 #define DEFAULT_MINIMUMFEEDRATE       0.0     // minimum feedrate
 #define DEFAULT_MINTRAVELFEEDRATE     0.0
+
+//#define HOME_AFTER_DEACTIVATE  // Require rehoming after steppers are deactivated
 
 // @section lcd
 
@@ -660,30 +658,16 @@
   #define MESH_MAX_X (X_MAX_POS - (MESH_INSET))
   #define MESH_MIN_Y (Y_MIN_POS + MESH_INSET)
   #define MESH_MAX_Y (Y_MAX_POS - (MESH_INSET))
-#endif
-/**
-#if ENABLED(AUTO_BED_LEVELING_UBL)
-  #ifdef DELTA_RADIUS
-    #define BED_CENTER_AT_0_0
-    #define UBL_MESH_MIN_X -DELTA_RADIUS + UBL_MESH_INSET  //must always have UBL_MESH_INSET in the equation
-    #define UBL_MESH_MAX_X  DELTA_RADIUS - UBL_MESH_INSET  //must always have UBL_MESH_INSET in the equation
-    #define UBL_MESH_MIN_Y -DELTA_RADIUS + UBL_MESH_INSET  //must always have UBL_MESH_INSET in the equation
-    #define UBL_MESH_MAX_Y  DELTA_RADIUS - UBL_MESH_INSET  //must always have UBL_MESH_INSET in the equation
-  #else  
-    #define UBL_MESH_MIN_X 0
-    #define UBL_MESH_MAX_X 395
-    #define UBL_MESH_MIN_Y 0
-    #define UBL_MESH_MAX_Y 500
-  
- /* 
-    #define UBL_MESH_MIN_X (X_MIN_POS + 30) + UBL_MESH_INSET  //must always have UBL_MESH_INSET in the equation
+#elif ENABLED(AUTO_BED_LEVELING_UBL)
+  #define UBL_MESH_MIN_X (X_MIN_POS + UBL_MESH_INSET)
+  #define UBL_MESH_MAX_X (X_MAX_POS - (UBL_MESH_INSET))
+  #define UBL_MESH_MIN_Y (Y_MIN_POS + UBL_MESH_INSET)
+  #define UBL_MESH_MAX_Y (Y_MAX_POS - (UBL_MESH_INSET))
 
-    #define UBL_MESH_MAX_X (X_MAX_POS - 30) - UBL_MESH_INSET  //must always have UBL_MESH_INSET in the equation
-    #define UBL_MESH_MIN_Y (Y_MIN_POS + 30) + UBL_MESH_INSET  //must always have UBL_MESH_INSET in the equation
-    #define UBL_MESH_MAX_Y (Y_MAX_POS - 30) - UBL_MESH_INSET  //must always have UBL_MESH_INSET in the equation
- */  
-//  #endif 
-//#endif
+  // If this is defined, the currently active mesh will be saved in the
+  // current slot on M500.
+  #define UBL_SAVE_ACTIVE_ON_M500
+#endif
 
 // @section extras
 
@@ -747,7 +731,7 @@
 // enter the serial receive buffer, so they cannot be blocked.
 // Currently handles M108, M112, M410
 // Does not work on boards using AT90USB (USBCON) processors!
-#define EMERGENCY_PARSER
+//#define EMERGENCY_PARSER
 
 // Bad Serial-connections can miss a received command by sending an 'ok'
 // Therefore some clients abort after 30 seconds in a timeout.
@@ -883,6 +867,7 @@
   #define E4_MAX_CURRENT    1000
   #define E4_SENSE_RESISTOR   91
   #define E4_MICROSTEPS       16
+
 #endif
 
 // @section TMC2130
@@ -1148,138 +1133,56 @@
 
 //#define EXPERIMENTAL_I2CBUS
 #define I2C_SLAVE_ADDRESS  0 // Set a value from 8 to 127 to act as a slave
+
+// @section extras
+
 /**
+ * Spindle & Laser control
  *
- *  Spindle control
+ * Add the M3, M4, and M5 commands to turn the spindle/laser on and off, and
+ * to set spindle speed, spindle direction, and laser power.
  *
- *  The M3, M4 & M5 g-code commands are used to turn the spindle on and off, to set the
- *  spindle speed and to set the spindle rotation direction.
+ * SuperPid is a router/spindle speed controller used in the CNC milling community.
+ * Marlin can be used to turn the spindle on and off. It can also be used to set
+ * the spindle speed from 5,000 to 30,000 RPM.
  *
- *  SuperPid is a router/spindle speed controller used in the CNC milling community.
- *  Marlin can be used to turn the spindle on and off.  It can also be used to set
- *  the spindle speed from 5,000 to 30,000 RPM.
+ * You'll need to select a pin for the ON/OFF function and optionally choose a 0-5V
+ * hardware PWM pin for the speed control and a pin for the rotation direction.
  *
- *  You'll need to select a 3.3V - 5V signal for the ON/OFF function and optionally
- *  choose a 0-5V hardware PWM pin for the speed control and a pin for the rotation direction.
+ * See http://marlinfw.org/docs/configuration/laser_spindle.html for more config details.
  */
+//#define SPINDLE_LASER_ENABLE
+#if ENABLED(SPINDLE_LASER_ENABLE)
 
-//#define SPINDLE_ENABLE
-#if ENABLED(SPINDLE_ENABLE)
-
-
-
-  #define SPINDLE_ENABLE_INVERT  false   // set to "true" if  the spindle on/off function is reversed
-  #define SPINDLE_SPEED true             // set to true if your spindle controller supports setting the spindle speed
-  #define SPINDLE_SPEED_INVERT  false   // set to "true" if the spindle speeds up when you want it to go slower
-  #define SPINDLE_POWER_UP_DELAY  5    // delay in seconds to allow the spindle to come up to speed
-  #define SPINDLE_POWER_DOWN_DELAY  5    // delay in seconds to allow the spindle to stop
-  #define DIRECTION_CHANGE  true        // set to true if your spindle controller supports changing spindle direction
-  #define INVERT_DIRECTION  false
-  #define STOP_WHEN_CHANGING_DIRECTION true  // set to true if Marlin should stop the spindle before changing rotation direction
+  #define SPINDLE_LASER_ENABLE_INVERT   false  // set to "true" if the on/off function is reversed
+  #define SPINDLE_LASER_PWM             true   // set to true if your controller supports setting the speed/power
+  #define SPINDLE_LASER_PWM_INVERT      true   // set to "true" if the speed/power goes up when you want it to go slower
+  #define SPINDLE_LASER_POWERUP_DELAY   5000   // delay in milliseconds to allow the spindle/laser to come up to speed/power
+  #define SPINDLE_LASER_POWERDOWN_DELAY 5000   // delay in milliseconds to allow the spindle to stop
+  #define SPINDLE_DIR_CHANGE            true   // set to true if your spindle controller supports changing spindle direction
+  #define SPINDLE_INVERT_DIR            false
+  #define SPINDLE_STOP_ON_DIR_CHANGE    true   // set to true if Marlin should stop the spindle before changing rotation direction
 
   /**
-   *  The M3 & M4 commands use the following equation to convert PWM duty cycle to spindle speed
+   *  The M3 & M4 commands use the following equation to convert PWM duty cycle to speed/power
    *
-   *  RPM = PWM duty cycle * RPM_slope  +  RPM_intercept
+   *  SPEED/POWER = PWM duty cycle * SPEED_POWER_SLOPE + SPEED_POWER_INTERCEPT
    *    where PWM duty cycle varies from 0 to 255
    *
    *  set the following for your controller (ALL MUST BE SET)
    */
 
-  #define RPM_SLOPE 118.4     // SuperPID
-  #define RPM_INTERCEPT 0     // SuperPID
-  #define RPM_MIN  5000       // SuperPID
-  #define RPM_MAX 30000       // SuperPID
+  #define SPEED_POWER_SLOPE    118.4
+  #define SPEED_POWER_INTERCEPT  0
+  #define SPEED_POWER_MIN     5000
+  #define SPEED_POWER_MAX    30000    // SuperPID router controller 0 - 30,000 RPM
+
+  //#define SPEED_POWER_SLOPE      0.3922
+  //#define SPEED_POWER_INTERCEPT  0
+  //#define SPEED_POWER_MIN       10
+  //#define SPEED_POWER_MAX      100      // 0-100%
 #endif
-/**
- *
- *  In the pins.h file for your board you'll need to add the following:
- *   #define SPINDLE_ENABLE_PIN xx     // xx is the digital pin number
- *   #define SPINDLE_SPEED_PIN yy      // yy is the digital pin number - MUST BE A HARDWARE PWM
- *   #define SPINDLE_DIR_PIN zz        // ZZ is the digital pin number
- *
- *  Selecting the pin for SPINDLE_ENABLE_PIN is fairly easy.  Just select any free digital
- *  pin with a 0 to 3.3V-5V logic levels.
- *
- *  It is HIGHLY RECOMMENDED that an external 1k-10k pull up resistor be connected to the
- *  SPINDLE_ENABLE_PIN.  This will prevent the spindle from powering on briefly during
- *  power up or when the controller is reset (which happens whenever you connect or
- *  disconnect from the controller).
- *
- *  Picking the PWM pin can be tricky.  There are only 15 hardware PWM pins on an ATMEGA2560.
- *  Some are used by the system interrupts so are unavailable.  Others are usually hardwired in the
- *  controller to functions you can't do without.  Fans, servos and some specialized functions
- *  all want to have a PWM pin.  Usually you'll end up picking a function you can do without,
- *  commenting that function out (or not enabling it) and assigning it's pin number to the
- *  speed pin.
- *
- *  For all CPUs the hardware PWMs on TIMER1 are not available.  Marlin uses TIMER1 to generate
- *  interrupts and sets it up in such a way that the none of it's PWMs can be used.
- *
- *  Servos also make hardware PWM(s) unavailable.  In this case it's only the "A" PWM that's
- *  unavailable.  The other hardware PWM(s) on that timer are available for general use.
- *
- *  Below is a table that can be used to when selecting the speed pin on a 2560.  Other CPUs
- *  are a subset of the 2560.
- *
- *  ATmega2560 PWM assignments & users
- *
- *  There are 16 PWM ports assigned to 15 physical pins.
- *     Pin 13 has two ports assigned to it.
- *
- *      Timer   Digital Normally    Used by         Optional
- *      & Port   Pin    assigned    system          users
- *      TIMER3B   2     X_MAX
- *      TIMER3C   3     X_MIN
- *      TIMER0B   4     HEATER_4    #temp & milli ISR
- *      TIMER3A   5     HEATER_5                    *servo 0-11 ISR
- *      TIMER4A   6     HEATER_6                    *servo 12-23 ISR
- *      TIMER4B   7     LCD
- *      TIMER4C   8     HOTBED
- *      TIMER2B   9     HEATER_1
- *      TIMER2A   10    HEATER_0
- *      TIMER1A   11    HEATER_7    *stepper ISR     *E axis waveform generator
- *      TIMER1B   12    PS_ON_PIN   *stepper ISR
- *      TIMER0A   13    LED         LED PWM & #step adv ISR
- *      TIMER1C   13                *stepper ISR
- *      TIMER5C   44    LCD                         stepper motor current XY PWM
- *      TIMER5B   45    LCD                         stepper motor current Z PWM
- *      TIMER5A   46    Z_STEP                      stepper motor current E PWM or *servo 24-35 ISR
- *
- *   * - These hardware PWMs are not available.  The pin can still be used as a general purpose
- *       digital I/O.
- *
- *   # - still can be used a hardware PWM even though it's also used by an ISR
- *
- *  In addition to the above, fans can be assigned to PWM pins.  If you pick a pin that's
- *  already assigned to a fan then you'll need to delete the fan or change its pin assignment.
- *  This needs to be done even if FAN_FAST_PWM is disabled.
- *
- *  NOTE: Most pins that are hardwired to a heater or a fan usually are driven by a power driver
- *        MOSFET which has on it's output a pull up through an LED to +12V/+24V. This will
- *        probably damage your spindle controller unless you add some circuitry.  If there isn't
- *        a +12V/+24V pull up you'll need an external 1k-10k pull up resistor to the pin.
- *
- *
- *  AT90USB646, 647, 1286 & 1287 PWM assignments
- *
- *     As with the 2560, the PWMs on Timer1 are not available.
- *
- *     These chips have 10 PWMs assigned to 9 pins.  TIMER0A and TIMER1C are tied to the same pin.
- *     Most Arduino IDE extensions only make TIMER1C available (Teensyduino included).  
- *
- *
- *  ATmega644 & 1284 PWM assignments
- *
- *     As with the 2560, the PWMs on Timer1 are not available.
- *
- *     All PWMs have their own pins.
- *
- */  //end Spindle control
-  
-/**
- * Add M43, M44 and M45 commands for pins info and testing
- */
+
 /**
  * M43 - display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  */
@@ -1312,5 +1215,15 @@
  *  - G92 will revert to its behavior from Marlin 1.0.
  */
 //#define NO_WORKSPACE_OFFSETS
+
+/**
+ * This affects the way Marlin outputs blacks of spaces via serial connection by multiplying the number
+ * of spaces to be output by the ratio set below.  This allows for better alignment of output for commands
+ * like G29 O, which renders a mesh/grid.
+ *
+ * For clients that use a fixed-width font (like OctoPrint), leave this at 1.0; otherwise, adjust
+ * accordingly for your client and font.
+ */
+#define PROPORTIONAL_FONT_RATIO 1.0
 
 #endif // CONFIGURATION_ADV_H
