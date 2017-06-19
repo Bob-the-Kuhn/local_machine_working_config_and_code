@@ -24,14 +24,28 @@
  * AZTEEG_X3_PRO (Arduino Mega) pin assignments
  */
 
+#if HOTENDS > 5 || E_STEPPERS > 5
+  #error "Azteeg X3 Pro supports up to 5 hotends / E-steppers. Comment out this line to continue."
+#endif
+
+#if ENABLED(CASE_LIGHT_ENABLE)  && !PIN_EXISTS(CASE_LIGHT)
+  #define CASE_LIGHT_PIN 44     // must define it here or else RAMPS will define it
+#endif
+
+
 #define BOARD_NAME "Azteeg X3 Pro"
 
 #include "pins_RAMPS.h"
 
-#define SPINDLE_ENABLE_PIN     45  // Hopefully use this in M3/4/5 commands
-#define SPINDLE_SPEED_PIN  44
-#define SPINDLE_DIR_PIN       21
+#ifndef __AVR_ATmega2560__
+  #error "Oops! Make sure you have 'Arduino Mega 2560' selected from the 'Tools -> Boards' menu."
+#endif
+#define SPINDLE_LASER_ENABLE_PIN  45  
+#define SPINDLE_LASER_PWM_PIN     44
+#define SPINDLE_DIR_PIN           21
 
+//
+// Servos
 //
 // Tested this pin with bed leveling on a Delta with 1 servo.
 // Physical wire attachment on EXT1: GND, 5V, D47.
@@ -40,7 +54,7 @@
 #undef SERVO1_PIN
 #undef SERVO2_PIN
 #define SERVO0_PIN         57
-#define SERVO1_PIN  64
+//#define SERVO1_PIN  64
 
   #undef X_MIN_PIN
   #undef X_MAX_PIN
@@ -49,12 +63,12 @@
   #undef Z_MIN_PIN
   #undef Z_MAX_PIN
 
-
 //
-// Swap the MIN and MAX endstop pins on Delta because the X3 Pro comes with only
+// Limit Switches
+//
+// Swap the MIN and MAX endstop pins because the X3 Pro comes with only
 // MIN endstop pin headers soldered onto the board.
 //
-
 #if ENABLED(DELTA)
   #define X_MIN_PIN         2
   #define X_MAX_PIN         3
@@ -77,9 +91,7 @@
 // Z Probe (when not Z_MIN_PIN)
 //
 #undef Z_MIN_PROBE_PIN
-#define Z_MIN_PROBE_PIN  64    
-
-/* use T4 (on silkscreen) connector for BLTouch */
+#define Z_MIN_PROBE_PIN  64  
 
 //
 // Steppers
@@ -99,26 +111,15 @@
 //
 // Temperature Sensors
 //
+#define TEMP_2_PIN         12   // Analog Input
+#define TEMP_3_PIN         11   // Analog Input
+#define TEMP_4_PIN         10   // Analog Input
+#define TC1                 4   // Analog Input (Thermo couple on Azteeg X3Pro)
+#define TC2                 5   // Analog Input (Thermo couple on Azteeg X3Pro)
 
-// T0 (on silkscreen)  67 / A13 - unuseable for anything
-// T1 (on silkscreen)  69 / A15 - OK
-// T2 (on silkscreen)  66 / A12 - input only
-// T3 (on silkscreen)  65 / A11 - unuseable for anything
-// T4 (on silkscreen)  64 / A10 - OK
-
-#undef TEMP_0_PIN          // 13  T0 is damaged & can't be used as an analog input
-#define TEMP_0_PIN         9   // the PT100 amplifier can't drive the 4.7K pullups on the standard termistor inputs
-//#define TEMP_0_PIN         15   // highjack temp 1 pin while trying the "147 : Pt100 with 4k7 pullup" setting - didn't work
-//#undef TEMP_1_PIN
-//#define TEMP_1_PIN          15   // T1 is OK (defined in RAMPS)
-//#define TEMP_2_PIN         12   // ANALOG NUMBERING   // T2 is damaged & can't be used as an analog input
-//#define TEMP_3_PIN         11   // ANALOG NUMBERING   // T3 is damaged & can't be used as an analog input
-
-//#define TEMP_4_PIN         10   // ANALOG NUMBERING  T4 is OK
-#undef  TEMP_4_PIN              // use it for BLTouch input
-#define TC1                 4   // ANALOG NUMBERING Thermo couple on Azteeg X3Pro
-#define TC2                 5   // ANALOG NUMBERING Thermo couple on Azteeg X3Pro
-
+//
+// Heaters / Fans
+//
 //
 // Heaters / Fans
 //
@@ -133,7 +134,9 @@
 #undef FAN_PIN
 #define FAN_PIN             6 //Part Cooling System
 
+
 //#define CONTROLLERFAN_PIN   4 //Pin used for the fan to cool motherboard (-1 to disable)
+
 
 // Fans/Water Pump to cool the hotend cool side.
 #undef RAMPS_D9_PIN
@@ -141,6 +144,7 @@
 #define E1_AUTO_FAN_PIN   9
 #define E2_AUTO_FAN_PIN   9
 #define E3_AUTO_FAN_PIN   9
+#define E4_AUTO_FAN_PIN   9
 
 //
 // LCD / Controller
@@ -148,8 +152,11 @@
 #undef BEEPER_PIN
 #define BEEPER_PIN         33
 
-#if ENABLED(VIKI2)      // some pins are different than standard
+#if ENABLED(VIKI2) || ENABLED(miniVIKI)
   #undef  BEEPER_PIN
+
+
+
   #undef  BTN_EN1
   #undef  BTN_EN2
   #undef  BTN_ENC
@@ -174,10 +181,30 @@
   #define  STAT_LED_RED_PIN 32
 #endif
 
+//
+// Misc. Functions
+//
+#if ENABLED(CASE_LIGHT_ENABLE)  && PIN_EXISTS(CASE_LIGHT) && defined(DOGLCD_A0) && DOGLCD_A0 == CASE_LIGHT_PIN
+  #undef DOGLCD_A0            // Steal pin 44 for the case light; if you have a Viki2 and have connected it
+  #define DOGLCD_A0        57 // following the Panucatt wiring diagram, you may need to tweak these pin assignments
+                              // as the wiring diagram uses pin 44 for DOGLCD_A0
+#endif
 
+/**
+//
+// M3/M4/M5 - Spindle/Laser Control
+//
+#undef SPINDLE_LASER_PWM_PIN    // Definitions in pins_RAMPS.h are no good with the AzteegX3pro board
+#undef SPINDLE_LASER_ENABLE_PIN
+#undef SPINDLE_DIR_PIN
 
-
-
-
-
-
+#if ENABLED(SPINDLE_LASER_ENABLE)   // use EXP2 header
+  #if ENABLED(VIKI2) || ENABLED(miniVIKI)
+    #undef BTN_EN2
+    #define BTN_EN2             31  // need 7 for the spindle speed PWM
+  #endif
+  #define SPINDLE_LASER_PWM_PIN     7  // must have a hardware PWM
+  #define SPINDLE_LASER_ENABLE_PIN 20  // Pin should have a pullup!
+  #define SPINDLE_DIR_PIN          21
+#endif
+*/
